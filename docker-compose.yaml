@@ -1,12 +1,12 @@
-version: '3.8'
+version: '5.5.1'
 services:
     java-maven-app:
-      image: ${IMAGE}
+      image: rik215/bootcamp-test:java-maven-1.0
       ports:
-        - 8080:8080
+        - "8080:8080"
     postgres:
       image: postgres:15
       ports:
-        - 5432:5432
+        - "5432:5432"
       environment:
         - POSTGRES_PASSWORD=my-pwd

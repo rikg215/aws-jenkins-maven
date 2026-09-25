@@ -35,7 +35,7 @@ pipeline {
         stage("deploy") {
             steps {
                 script {
-                    def dockerCmd = "docker run -p 3080:3080 -d rik215/bootcamp-test:${IMAGE_NAME}"
+                    def dockerCmd = "docker run -p 8080:8080 -d rik215/bootcamp-test:${IMAGE_NAME}"
                     sshagent(credentials: ['ec2-server'], executable: '') {
                         sh "ssh -o StrictHostKeyChecking=no ec2-user@18.118.146.140 ${dockerCmd}"
                     }

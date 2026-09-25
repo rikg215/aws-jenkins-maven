@@ -1,28 +1,41 @@
-#!/usr/bin.env groovy
+#!/usr/bin/env groovy
 
-pipeline {   
+library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
+    [$class: 'GitSCMSource',
+    remote: 'https://github.com/rikg215/jenkins-shared-library.git',
+    credentialsID: 'gitlab-credentials'
+    ]
+)
+
+pipeline {
     agent any
+    tools {
+        maven 'maven-tool'
+    }
+    environment {
+        IMAGE_NAME = 'rik215/bootcamp-test:java-maven-1.0'
+    }
     stages {
-        stage("test") {
+        stage('build app') {
+            steps {
+                echo 'building application jar...'
+                buildJar()
+            }
+        }
+        stage('build image') {
             steps {
                 script {
-                    echo "Testing the application..."
-
+                    echo 'building the docker image...'
+                    buildImage(env.imageName)
+                    dockerLogin()
+                    dockerPush(env.imageName)
                 }
             }
         }
-        stage("build") {
-            steps {
-                script {
-                    echo "Building the application..."
-                }
-            }
-        }
-
         stage("deploy") {
             steps {
                 script {
-                    def dockerCmd = 'docker run -p 3080:3080 -d rik215/bootcamp-test:my-app-1.0'
+                    def dockerCmd = "docker run -p 3080:3080 -d rik215/bootcamp-test:${IMAGE_NAME}"
                     sshagent(credentials: ['ec2-server'], executable: '') {
                         sh "ssh -o StrictHostKeyChecking=no ec2-user@18.118.146.140 ${dockerCmd}"
                     }

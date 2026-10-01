@@ -13,13 +13,13 @@ pipeline {
         maven 'maven-tool'
     }
     stages {
-	stage('testing') {
-	    steps {
-		script {
-		    echo 'testing the application'
+		stage('testing') {
+	    	steps {
+				script {
+		    		echo 'testing the application'
+				}
+	    	}
 		}
-	    }
-	}
 
         stage('increment version') {
 	    when {
@@ -38,12 +38,18 @@ pipeline {
             }
         }
         stage('build app') {
+			when {
+	    	expression { BRANCH_NAME == 'main' }
+	    }
             steps {
                 echo 'building application jar...'
                 buildJar()
             }
         }
         stage('build image') {
+			when {
+	    	expression { BRANCH_NAME == 'main' }
+	    }
             steps {
                 script {
                     echo 'building the docker image...'
@@ -54,6 +60,9 @@ pipeline {
             }
         }
         stage("deploy") {
+			when {
+	    	expression { BRANCH_NAME == 'main' }
+	    }
             steps {
                 script {
                     echo 'deploying docker image to EC2...'
@@ -70,6 +79,9 @@ pipeline {
             }
         }
         stage("commit version update") {
+			when {
+	    	expression { BRANCH_NAME == 'main' }
+	    }
             steps {
                 script {
                 withCredentials([usernamePassword(credentialsId: 'github_pat', passwordVariable: 'PASS', usernameVariable: 'USER')]) {

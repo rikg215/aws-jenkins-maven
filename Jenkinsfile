@@ -56,6 +56,7 @@ pipeline {
                     buildImage(env.IMAGE_NAME)
                     dockerLogin()
                     dockerPush(env.IMAGE_NAME)
+		    		sh "docker rmi ${env.IMAGE_NAME}"
                 }
             }
         }

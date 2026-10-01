@@ -13,7 +13,18 @@ pipeline {
         maven 'maven-tool'
     }
     stages {
+	stage('testing') {
+	    steps {
+		script {
+		    echo 'testing the application'
+		}
+	    }
+	}
+
         stage('increment version') {
+	    when {
+	    	expression { BRANCH_NAME == 'main' }
+	    }
             steps {
                 script {
                 echo 'incrementing version...'

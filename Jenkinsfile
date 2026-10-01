@@ -7,7 +7,7 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
     ]
 )
 
-pipeline {
+pipeline {   
     agent any
     tools {
         maven 'maven-tool'
